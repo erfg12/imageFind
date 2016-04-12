@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
-using System.IO;
 
 namespace WindowsFormsApplication3
 {
@@ -52,7 +46,7 @@ namespace WindowsFormsApplication3
             const Int32 divisor = 4;
             const Int32 epsilon = 10;
 
-            ExhaustiveTemplateMatching etm = new ExhaustiveTemplateMatching(0.98f); //98% threshold
+            ExhaustiveTemplateMatching etm = new ExhaustiveTemplateMatching(0.925f); //98% threshold
 
             TemplateMatch[] tm = etm.ProcessImage(
                 new ResizeNearestNeighbor(template.Width / divisor, template.Height / divisor).Apply(template),
@@ -111,39 +105,24 @@ namespace WindowsFormsApplication3
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            //while (true)
-            //{
-                int screenWidth = Screen.GetBounds(new Point(0, 0)).Width;
-                int screenHeight = Screen.GetBounds(new Point(0, 0)).Height;
-                Bitmap bmpScreenShot = new Bitmap(screenWidth, screenHeight);
-                Bitmap findimg = new Bitmap(Application.StartupPath + @"\find.bmp");
-                Graphics gfx = Graphics.FromImage(bmpScreenShot);
-                gfx.CopyFromScreen(0, 0, 0, 0, new Size(screenWidth, screenHeight));
-                //bmpScreenShot.Save("Screenshot.bmp", System.Drawing.Imaging.ImageFormat.Bmp);
+            int screenWidth = Screen.GetBounds(new Point(0, 0)).Width;
+            int screenHeight = Screen.GetBounds(new Point(0, 0)).Height;
+            Bitmap bmpScreenShot = new Bitmap(screenWidth, screenHeight);
+            Bitmap findimg = new Bitmap(Application.StartupPath + @"\find.bmp");
+            Graphics gfx = Graphics.FromImage(bmpScreenShot);
+            gfx.CopyFromScreen(0, 0, 0, 0, new Size(screenWidth, screenHeight));
+            //bmpScreenShot.Save("Screenshot.bmp", System.Drawing.Imaging.ImageFormat.Bmp); //DEBUG
 
-                Bitmap template = ConvertToFormat(bmpScreenShot, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-                find = ConvertToFormat(findimg, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-                pictureBox1.Image = null;
-                pictureBox1.Image = template;
+            Bitmap template = ConvertToFormat(bmpScreenShot, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            find = ConvertToFormat(findimg, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            pictureBox1.Image = null;
+            pictureBox1.Image = template;
 
-                template2 = ConvertToFormat(bmpScreenShot, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            template2 = ConvertToFormat(bmpScreenShot, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
-                //if (template != null && find != null && gfx != null)
-                //Contains(template2, find);
-
-                //template.Dispose();
-                //find.Dispose();
-                bmpScreenShot.Dispose();
-                findimg.Dispose();
-                gfx.Dispose();
-            //}
-        }
-
-
-
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-
+            bmpScreenShot.Dispose();
+            findimg.Dispose();
+            gfx.Dispose();
         }
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
